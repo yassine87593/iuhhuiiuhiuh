@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PIXEL ARENA — Jeux en ligne</title>
+<style>
+:root{--bg:#090d18;--panel:#111a2b;--panel2:#17233a;--line:#263650;--text:#f4f7ff;--muted:#aab7cf;--blue:#5b8cff;--cyan:#36d6d0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#17264a 0,#090d18 52%);color:var(--text);font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif;min-height:100vh}
+header{padding:22px clamp(16px,4vw,48px) 16px;border-bottom:1px solid #263650;background:#090d18dd;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:43px;height:43px;border-radius:14px;background:linear-gradient(135deg,#5b8cff,#36d6d0);display:grid;place-items:center;font-size:24px;box-shadow:0 8px 30px #386bff55}
+h1{font-size:clamp(22px,4vw,30px);margin:0;letter-spacing:.5px}.sub{color:var(--muted);margin:3px 0 0}
+.toprow{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:17px}
+input{background:#111a2b;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 14px;font:inherit;min-width:min(100%,280px);flex:1;max-width:520px;outline:none}input:focus{border-color:var(--blue)}
+main{padding:24px clamp(14px,4vw,48px);max-width:1500px;margin:auto}
+.notice{background:#17233a;border:1px solid #344969;border-radius:14px;padding:12px 15px;color:#d7e3ff;margin-bottom:20px}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}.chip,button{border:1px solid var(--line);background:#121d31;color:var(--text);padding:9px 13px;border-radius:999px;cursor:pointer;font:inherit}.chip.active,.chip:hover,button.primary{background:linear-gradient(135deg,#386bff,#237eae);border-color:transparent}
+.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,.75fr);gap:18px;align-items:start}
+.playerbox,.sidebox,.gamecard{background:linear-gradient(180deg,#142039,#101827);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 12px 35px #0003}
+.playerhead{padding:14px 16px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.playerhead h2{margin:0;font-size:18px}.player{background:#05070d;min-height:390px;aspect-ratio:16/9;display:grid;place-items:center;position:relative}
+iframe{width:100%;height:100%;min-height:390px;border:0;background:#05070d}
+.placeholder{max-width:520px;text-align:center;padding:25px;color:var(--muted)}.placeholder strong{display:block;color:var(--text);font-size:20px;margin-bottom:8px}
+.playerfoot{padding:12px 16px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+.sidebox{padding:16px}.sidebox h3{margin:0 0 10px}.sidebox p{color:var(--muted);font-size:13px}.gamegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:13px;margin-top:24px}
+.gamecard{cursor:pointer;transition:transform .15s,border-color .15s}.gamecard:hover{transform:translateY(-3px);border-color:#5b8cff}.thumb{height:105px;display:grid;place-items:center;font-size:42px;background:radial-gradient(circle at 25% 25%,#36558a,#15223a 70%)}.gameinfo{padding:11px 12px}.gameinfo b{display:block}.gameinfo small{color:var(--muted)}
+#builtIn{width:100%;min-height:390px;padding:22px;text-align:center}.playbtn{background:linear-gradient(135deg,#386bff,#237eae);border:0;border-radius:12px;padding:12px 20px;color:white;font-weight:700;cursor:pointer}
+#builtIn canvas{max-width:100%;background:#07101c;border:1px solid #344969;border-radius:12px}
+footer{padding:25px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.player{min-height:300px}iframe{min-height:300px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">🎮</div><div><h1>PIXEL ARENA</h1><p class="sub">Ton univers de jeux, au même endroit.</p></div></div>
+ <div class="toprow"><input id="search" placeholder="🔎 Rechercher un jeu..." autocomplete="off"><span style="color:#aab7cf;font-size:13px">Mode plein écran disponible selon le jeu</span></div>
+</header>
+<main>
+ <div class="notice">🛡️ Les jeux se lancent dans le lecteur de PIXEL ARENA. Certains sites interdisent l'affichage intégré : dans ce cas, le jeu peut rester bloqué. PIXEL ARENA ne peut pas modifier leurs autorisations.</div>
+ <div class="categories" id="categories"></div>
+ <section class="layout">
+  <div class="playerbox">
+   <div class="playerhead"><h2 id="currentTitle">Bienvenue dans PIXEL ARENA</h2><button class="primary" id="fullscreen">⛶ Plein écran</button></div>
+   <div class="player" id="player"><div class="placeholder"><strong>Choisis un jeu pour commencer</strong>Les jeux intégrés apparaîtront ici, sans ouvrir un autre onglet.</div></div>
+   <div class="playerfoot" id="status">Prêt à jouer · Les jeux intégrés dépendent des autorisations de leur éditeur.</div>
+  </div>
+  <aside class="sidebox"><h3>⚡ À savoir</h3>
+   <p><b>Jeux intégrés :</b> les mini-jeux inclus dans PIXEL ARENA fonctionnent directement ici.</p>
+   <p><b>Jeux externes :</b> un éditeur peut bloquer l'affichage dans un lecteur intégré. Si cela arrive, ce n'est pas un bug que le site peut contourner.</p>
+   <p><b>Émulation :</b> pour les jeux PS1/PSP, utilise uniquement tes propres fichiers de jeu et BIOS lorsque requis. Cette première version ne fournit aucun jeu protégé.</p>
+   <p><b>Performances :</b> le site ne force pas une limite de 60 FPS sur tous les jeux; cela dépend du jeu et de l'appareil.</p>
+  </aside>
+ </section>
+ <h2 style="margin:28px 0 4px">Explorer les jeux</h2><p class="sub">Sélectionne une carte pour charger le jeu dans le lecteur.</p>
+ <div class="gamegrid" id="grid"></div>
+</main>
+<footer>PIXEL ARENA · Prototype local · Aucun compte requis</footer>
+<script>
+const games=[
+ {name:"Snake Arena",cat:"Mini-jeux",emoji:"🐍",kind:"snake",desc:"Mini-jeu intégré"},
+ {name:"Click Challenge",cat:"Mini-jeux",emoji:"⚡",kind:"click",desc:"Mini-jeu intégré"},
+ {name:"Memory",cat:"Mini-jeux",emoji:"🧠",kind:"memory",desc:"Mini-jeu intégré"},
+ {name:"Eaglercraft",cat:"Minecraft",emoji:"⛏️",url:"https://eaglercraft.com/play/",desc:"Minecraft compatible navigateur · intégration non garantie"},
+ {name:"Minecraft Classic",cat:"Minecraft",emoji:"🧱",url:"https://classic.minecraft.net/",desc:"Version classique officielle · intégration non garantie"},
+ {name:"Slither.io",cat:".io",emoji:"🐍",url:"https://slither.io/",desc:"Jeu .io · intégration non garantie"},
+ {name:"Paper.io 2",cat:".io",emoji:"🟦",url:"https://paper-io.com/",desc:"Jeu .io · intégration non garantie"},
+ {name:"Diep.io",cat:".io",emoji:"🔵",url:"https://diep.io/",desc:"Jeu .io · intégration non garantie"},
+ {name:"Agar.io",cat:".io",emoji:"🟣",url:"https://agar.io/",desc:"Jeu .io · intégration non garantie"},
+ {name:"Krunker",cat:"Action",emoji:"🎯",url:"https://krunker.io/",desc:"FPS navigateur · intégration non garantie"},
+ {name:"GTA Vice City",cat:"Rétro",emoji:"🚗",url:"https://wasmarcade.com/vice-city",desc:"Lecteur WASM Arcade · intégration à vérifier"},
+ {name:"GTA III",cat:"Rétro",emoji:"🚕",url:"https://wasmarcade.com/gta3",desc:"Lecteur WASM Arcade · intégration à vérifier"}
+];
+const cats=["Tout",...new Set(games.map(g=>g.cat))];let active="Tout";
+const grid=document.getElementById("grid"), player=document.getElementById("player");
+function renderCats(){document.getElementById("categories").innerHTML=cats.map(c=>`<button class="chip ${c===active?"active":""}" data-cat="${c}">${c}</button>`).join("");document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{active=b.dataset.cat;renderCats();renderGames()})}
+function renderGames(){let q=document.getElementById("search").value.toLowerCase();let shown=games.filter(g=>(active==="Tout"||g.cat===active)&&(g.name+" "+g.desc).toLowerCase().includes(q));grid.innerHTML=shown.map(g=>`<article class="gamecard" data-game="${g.name}"><div class="thumb">${g.emoji}</div><div class="gameinfo"><b>${g.name}</b><small>${g.desc}</small></div></article>`).join("");document.querySelectorAll("[data-game]").forEach(el=>el.onclick=()=>launch(games.find(g=>g.name===el.dataset.game)))}
+function launch(g){document.getElementById("currentTitle").textContent=g.name;document.getElementById("status").textContent=g.desc;player.innerHTML="";
+ if(g.kind){builtIn(g.kind);return}
+ const frame=document.createElement("iframe");frame.src=g.url;frame.title=g.name;frame.allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write";frame.allowFullscreen=true;frame.referrerPolicy="strict-origin-when-cross-origin";
+ player.appendChild(frame);
+ document.getElementById("status").textContent="Chargement dans PIXEL ARENA. Si le lecteur reste vide ou affiche une erreur, le site du jeu bloque probablement l'intégration.";
+}
+function builtIn(kind){const wrap=document.createElement("div");wrap.id="builtIn";player.appendChild(wrap);
+ if(kind==="click"){wrap.innerHTML='<h2>Click Challenge ⚡</h2><p>Clique le plus vite possible pendant 10 secondes.</p><h1 id="score">0</h1><p id="timer">Temps : 10</p><button class="playbtn" id="start">Commencer</button>';let score=0,t=10,iv;wrap.querySelector("#start").onclick=()=>{score=0;t=10;wrap.querySelector("#score").textContent=score;clearInterval(iv);iv=setInterval(()=>{t--;wrap.querySelector("#timer").textContent="Temps : "+t;if(t<=0){clearInterval(iv);wrap.querySelector("#start").textContent="Rejouer"}},1000)};wrap.querySelector("#score").onclick=()=>{if(t>0){score++;wrap.querySelector("#score").textContent=score}};return}
+ if(kind==="memory"){let vals=["🍎","🚀","🐱","⚽","🌟","🎮","🍎","🚀","🐱","⚽","🌟","🎮"].sort(()=>Math.random()-.5),open=[],done=0;wrap.innerHTML="<h2>Memory 🧠</h2><p>Retrouve les paires.</p><div id='cards' style='display:grid;grid-template-columns:repeat(4,minmax(45px,70px));gap:9px;justify-content:center'></div><p id='msg'>Paires trouvées : 0/6</p>";let box=wrap.querySelector("#cards");vals.forEach((v,i)=>{let b=document.createElement("button");b.textContent="❔";b.style.borderRadius="12px";b.style.fontSize="23px";b.style.padding="15px 5px";b.onclick=()=>{if(open.length===2||b.dataset.done)return;b.textContent=v;open.push({b,v});if(open.length===2){if(open[0].v===open[1].v){open.forEach(x=>x.b.dataset.done="1");done++;wrap.querySelector("#msg").textContent=`Paires trouvées : ${done}/6`;open=[]}else setTimeout(()=>{open.forEach(x=>x.b.textContent="❔");open=[]},700)}if(done===6)wrap.querySelector("#msg").textContent="Bravo, tu as trouvé toutes les paires !"};box.appendChild(b)});return}
+ wrap.innerHTML='<h2>Snake Arena 🐍</h2><p>Utilise les flèches du clavier pour diriger le serpent.</p><canvas id="snake" width="360" height="360"></canvas><p id="snakeMsg">Appuie sur une flèche pour commencer.</p><button class="playbtn" id="reset">Recommencer</button>';let c=wrap.querySelector("canvas"),ctx=c.getContext("2d"),snake=[{x:8,y:8}],dir={x:0,y:0},food={x:14,y:12},alive=true;function draw(){ctx.fillStyle="#07101c";ctx.fillRect(0,0,360,360);ctx.fillStyle="#36d6d0";snake.forEach(p=>ctx.fillRect(p.x*20+1,p.y*20+1,18,18));ctx.fillStyle="#ffcb5b";ctx.fillRect(food.x*20+2,food.y*20+2,16,16)}function reset(){snake=[{x:8,y:8}];dir={x:0,y:0};alive=true;food={x:14,y:12};draw();wrap.querySelector("#snakeMsg").textContent="Appuie sur une flèche pour commencer."}document.onkeydown=e=>{let d={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}}[e.key];if(d&&!(d.x===-dir.x&&d.y===-dir.y))dir=d};let last=0;function tick(ts){if(!alive)return;if(ts-last>130){last=ts;if(dir.x||dir.y){let h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(h.x<0||h.y<0||h.x>=18||h.y>=18||snake.some(p=>p.x===h.x&&p.y===h.y)){alive=false;wrap.querySelector("#snakeMsg").textContent="Partie terminée ! Recommence pour rejouer.";return}snake.unshift(h);if(h.x===food.x&&h.y===food.y)food={x:Math.floor(Math.random()*18),y:Math.floor(Math.random()*18)};else snake.pop();}draw()}requestAnimationFrame(tick)}requestAnimationFrame(tick);wrap.querySelector("#reset").onclick=()=>{reset();requestAnimationFrame(tick)};draw();
+}
+document.getElementById("search").addEventListener("input",renderGames);
+document.getElementById("fullscreen").onclick=()=>{let el=document.querySelector(".playerbox");if(el.requestFullscreen)el.requestFullscreen()};
+renderCats();renderGames();
+</script>
+</body></html>
